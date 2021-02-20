@@ -166,7 +166,7 @@ module Agents
     def itunes_icon
       if(boolify(interpolated['ns_itunes']))
         "<itunes:image href=#{feed_icon.encode(xml: :attr)} />"
-      end  
+      end
     end
 
     def feed_description
@@ -191,6 +191,13 @@ module Agents
 
     def push_hubs
       interpolated['push_hubs'].presence || []
+    end
+
+    def channel_tags
+      if options['template']['channel'].presence
+        items_to_xml(options['template']['channel'])
+          .gsub(%r{^</?items>}, '')
+      end
     end
 
     DEFAULT_EVENTS_ORDER = {
@@ -309,6 +316,7 @@ module Agents
  <lastBuildDate>#{now.rfc2822.to_s.encode(xml: :text)}</lastBuildDate>
  <pubDate>#{now.rfc2822.to_s.encode(xml: :text)}</pubDate>
  <ttl>#{feed_ttl}</ttl>
+#{channel_tags}
 #{items}
 </channel>
 </rss>
